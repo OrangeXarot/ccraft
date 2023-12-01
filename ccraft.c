@@ -29,11 +29,9 @@ char blocks[] = {'#', '$', '/', '\\', '[', ']', '-'};
 int totBlocks = sizeof(blocks)/sizeof(blocks[0]);
 int idxBlocks = 0;
 char bChar;
-char ds[6];
 char input;
-int x, y, direction;
+int x, y;
 char color[9];
-
 
 void init_color();
 void splash();
@@ -88,7 +86,6 @@ void setup() {
 
   x = WIDTH/2;
   y = HEIGHT/2;
-  direction = 0;
   map[y][x] = pChar;
   bChar = blocks[0];
 }
@@ -116,23 +113,9 @@ void printScreen() {
     printf("\n");
   }
 
-  switch(direction) {
-    case UP:
-      strcpy(ds, "up");
-      break;
-    case RIGHT:
-      strcpy(ds, "right");
-      break;
-    case DOWN:
-      strcpy(ds, "down");
-      break;
-    case LEFT:
-      strcpy(ds, "left");
-      break;
-  }
 
-  printf(" Movement: w a s d  Direction: arrows  Change block: c ('%c')  \t\t\t\tQuit: q\t\t  X: %d Y: %d D: %s\n", bChar, x, y, ds);
-  printf(" Build: b  Destroy: n\n");
+  printf(" Movement: w a s d   Change block: c ('%c')  \t\t\t\t\t\tQuit: q\t\t  X: %d Y: %d\n", bChar, x, y);
+  printf(" Build and Destroy: arrows\n");
   system("/bin/stty raw");
 
 }
@@ -145,47 +128,23 @@ void movement() {
   switch(input) {
     case 'a':
       x--;
-      direction = LEFT;
       if(x == 0 || map[y][x] != ' ')
         x++;
       break;
     case 'd':
       x++;
-      direction = RIGHT;
       if(x == WIDTH-1 || map[y][x] != ' ')
         x--;
       break;
     case 'w':
       y--;
-      direction = UP;
       if(y == 0 || map[y][x] != ' ')
         y++;
       break;
     case 's':
       y++;
-      direction = DOWN;
       if(y == HEIGHT-1 || map[y][x] != ' ')
         y--;
-      break;
-    case 'b':
-      if(direction == UP)
-        map[y-1][x] = bChar;
-      if(direction == RIGHT)
-        map[y][x+1] = bChar;
-      if(direction == DOWN)
-        map[y+1][x] = bChar;
-      if(direction == LEFT)
-        map[y][x-1] = bChar;
-      break;
-    case 'n':
-      if(direction == UP)
-        map[y-1][x] = ' ';
-      if(direction == RIGHT)
-        map[y][x+1] = ' ';
-      if(direction == DOWN)
-        map[y+1][x] = ' ';
-      if(direction == LEFT)
-        map[y][x-1] = ' ';
       break;
     case 'c':
       idxBlocks++;
@@ -194,16 +153,20 @@ void movement() {
       bChar = blocks[idxBlocks];
       break;
     case UP_ARROW:
-      direction = UP;
+      if(map[y-1][x] == bChar) map[y-1][x] = ' ';
+      else map[y-1][x] = bChar;
       break;
     case RIGHT_ARROW:
-      direction = RIGHT;
+      if(map[y][x+1] == bChar) map[y][x+1] = ' ';
+      else map[y][x+1] = bChar;
       break;
     case DOWN_ARROW:
-      direction = DOWN;
+      if(map[y+1][x] == bChar) map[y+1][x] = ' ';
+      else map[y+1][x] = bChar;
       break;
     case LEFT_ARROW:
-      direction = LEFT;
+      if(map[y][x-1] == bChar) map[y][x-1] = ' ';
+      else map[y][x-1] = bChar;
       break;
   }
   map[y][x] = pChar;
