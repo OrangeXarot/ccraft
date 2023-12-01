@@ -22,7 +22,6 @@
 #define MAG "\e[1;35m"
 #define CYN "\e[1;36m"
 
-
 char map[HEIGHT][WIDTH];
 char pChar = 'O';
 char blocks[] = {'#', '$', '/', '\\', '|', '[', ']', '-', '+', '=', '<', '>'};
@@ -64,11 +63,9 @@ void init_color() {
       strcpy(color, CYN);
       break;
   }
-
 }
 
 void splash() {
-
   printf("\e[?25l\b \n%s ________                ________  ________  ________  ________ __________\n", color);
   printf("|\\   ____\\              |\\   ____\\|\\   __  \\|\\   __  \\|\\  _____\\\\___   ___\\\n");
   printf("\\ \\  \\___|  ____________\\ \\  \\___|\\ \\  \\|\\  \\ \\  \\|\\  \\ \\  \\__/\\|___ \\  \\_|\n");
@@ -94,30 +91,41 @@ void setup() {
 void printScreen() {
   system("/bin/stty cooked");
   system("clear");
+
   splash();
+
   for(int i = 0; i < HEIGHT; i++) {
     for(int j = 0; j < WIDTH; j++) {
       if(i == 0 && j == 0) printf("╭");
+
       else if(i == 0 && j == WIDTH-1)
         printf("╮");
+
       else if(i == HEIGHT-1 && j == 0)
         printf("╰");
+
       else if(i == HEIGHT-1 && j == WIDTH-1)
         printf("╯");
+
       else if(i == 0 || i == HEIGHT-1)
         printf("─");
+
       else if(j == 0 || j == WIDTH-1)
         printf("│");
+
       else if(map[i][j] == 'O')
         printf("%sO%s", color, reset);
+
       else
         printf("%c", map[i][j]);
+
     }
+
     printf("\n");
   }
 
-
-  printf(" Movement: %sw a s d%s  |  Build and Destroy: %sarrows%s  |  Change Block: %sc v%s  |  Custom Block: %s?%s  |  Quit: %sq%s\t\t  X: %s%d%s Y: %s%d%s\n", color, reset, color, reset, color, reset, color, reset, color, reset, color, x, reset, color, y, reset);
+  printf(" Movement: %sw a s d%s  |  Build and Destroy: %sarrows%s  |  Change Block: %sc v%s  |  Custom Block: %s?%s  |  Quit: %sq%s\t\t  X: %s%d%s Y: %s%d%s\n", 
+         color, reset, color, reset, color, reset, color, reset, color, reset, color, x, reset, color, y, reset);
   printf(" Blocks: %s", color);
 
   for(int i = 0; i < totBlocks; i++) {
@@ -126,79 +134,93 @@ void printScreen() {
     printf("%c", blocks[i]);
     printf("\e[27m");
   } 
+
   printf("%s", reset);
+
   if(cChar != ' ') {
     if(bChar == cChar)
       printf(" | \e[7m%s%c%s\e[27m", color, cChar, reset);
+
     else 
       printf(" | %s%c%s", color, cChar, reset);
+
   }
+
   printf("\n");
   system("/bin/stty raw");
-
 }
 
 
 void movement() {
   input = getchar();
   map[y][x] = ' ';
+
   switch(input) {
     case 'a':
       x--;
-      if(x == 0 || map[y][x] != ' ')
-        x++;
+      if(x == 0 || map[y][x] != ' ') x++;
       break;
+
     case 'd':
       x++;
-      if(x == WIDTH-1 || map[y][x] != ' ')
-        x--;
+      if(x == WIDTH-1 || map[y][x] != ' ') x--;
       break;
+
     case 'w':
       y--;
-      if(y == 0 || map[y][x] != ' ')
-        y++;
+      if(y == 0 || map[y][x] != ' ') y++;
       break;
+
     case 's':
       y++;
-      if(y == HEIGHT-1 || map[y][x] != ' ')
-        y--;
+      if(y == HEIGHT-1 || map[y][x] != ' ') y--;
       break;
+
     case 'v':
       idxBlocks++;
       if(idxBlocks > totBlocks - 1 || cChar == bChar) 
         idxBlocks = 0;
+
       cChar = ' ';
       bChar = blocks[idxBlocks];
       break;
+
     case 'c':
       idxBlocks--;
       if(idxBlocks < 0 || cChar == bChar) 
         idxBlocks = totBlocks - 1;
+
       cChar = ' ';
       bChar = blocks[idxBlocks];
       break;
+
     case '?':
       printf("\b Click a key to make it the custom character");
       cChar = getchar();
       bChar = cChar;
       break;
+
     case UP_ARROW:
       if(map[y-1][x] != ' ') map[y-1][x] = ' ';
       else map[y-1][x] = bChar;
       break;
+
     case RIGHT_ARROW:
       if(map[y][x+1] != ' ') map[y][x+1] = ' ';
       else map[y][x+1] = bChar;
       break;
+
     case DOWN_ARROW:
       if(map[y+1][x] != ' ') map[y+1][x] = ' ';
       else map[y+1][x] = bChar;
       break;
+
     case LEFT_ARROW:
       if(map[y][x-1] != ' ') map[y][x-1] = ' ';
       else map[y][x-1] = bChar;
       break;
   }
+
   map[y][x] = pChar;
 }
 
@@ -206,6 +228,7 @@ int main() {
   init_color();
   splash();
   setup();
+
   do {
     printScreen();
     movement();
