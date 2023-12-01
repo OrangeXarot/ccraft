@@ -1,5 +1,5 @@
 # ccraft
-Minecraft written in C and is in 2d
+Minecraft written in C and is in 2D
 
 to compile it:
 ```
