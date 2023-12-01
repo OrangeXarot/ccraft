@@ -1,3 +1,13 @@
+/*
+ ________                ________  ________  ________  ________ __________
+|\   ____\              |\   ____\|\   __  \|\   __  \|\  _____\\___   ___\
+\ \  \___|  ____________\ \  \___|\ \  \|\  \ \  \|\  \ \  \__/\|___ \  \_|
+ \ \  \    |\____________\ \  \    \ \   _  _\ \   __  \ \   __\    \ \  \
+  \ \  \___\|____________|\ \  \____\ \  \\  \\ \  \ \  \ \  \_|     \ \  \
+   \ \_______\             \ \_______\ \__\\ _\\ \__\ \__\ \__\       \ \__\
+    \|_______| OrangeXarot  \|_______|\|__|\|__|\|__|\|__|\|__|        \|__|
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,7 +35,7 @@
 char map[HEIGHT][WIDTH];
 char pChar = 'O';
 char blocks[] = {'#', '$', '/', '\\', '|', '[', ']', '-', '+', '=', '<', '>'};
-int totBlocks = sizeof(blocks)/sizeof(blocks[0]);
+int totBlocks = sizeof(blocks) / sizeof(blocks[0]);
 int idxBlocks = 0;
 char bChar;
 char cChar = ' ';
@@ -43,47 +53,57 @@ void movement();
 void init_color() {
   srand(time(NULL));
   int random = rand() % 6;
-  switch(random) {
-    case 0:
-      strcpy(color, RED);
-      break;
-    case 1:
-      strcpy(color, GRN);
-      break;
-    case 2:
-      strcpy(color, YEL);
-      break;
-    case 3:
-      strcpy(color, BLU);
-      break;
-    case 4:
-      strcpy(color, MAG);
-      break;
-    case 5:
-      strcpy(color, CYN);
-      break;
+  switch (random) {
+  case 0:
+    strcpy(color, RED);
+    break;
+  case 1:
+    strcpy(color, GRN);
+    break;
+  case 2:
+    strcpy(color, YEL);
+    break;
+  case 3:
+    strcpy(color, BLU);
+    break;
+  case 4:
+    strcpy(color, MAG);
+    break;
+  case 5:
+    strcpy(color, CYN);
+    break;
   }
 }
 
 void splash() {
-  printf("\e[?25l\b \n%s ________                ________  ________  ________  ________ __________\n", color);
-  printf("|\\   ____\\              |\\   ____\\|\\   __  \\|\\   __  \\|\\  _____\\\\___   ___\\\n");
-  printf("\\ \\  \\___|  ____________\\ \\  \\___|\\ \\  \\|\\  \\ \\  \\|\\  \\ \\  \\__/\\|___ \\  \\_|\n");
-  printf(" \\ \\  \\    |\\____________\\ \\  \\    \\ \\   _  _\\ \\   __  \\ \\   __\\    \\ \\  \\  \n");
-  printf("  \\ \\  \\___\\|____________|\\ \\  \\____\\ \\  \\\\  \\\\ \\  \\ \\  \\ \\  \\_|     \\ \\  \\ \n");
-  printf("   \\ \\_______\\             \\ \\_______\\ \\__\\\\ _\\\\ \\__\\ \\__\\ \\__\\       \\ \\__\\\n");
-  printf("    \\|_______|              \\|_______|\\|__|\\|__|\\|__|\\|__|\\|__|        \\|__| %s2.4\t\t\t  Made by %sOrangeXarot%s\n\n", reset, color, reset);
+  printf("\e[?25l\b \n%s ________                ________  ________  ________  "
+         "________ __________\n",
+         color);
+  printf("|\\   ____\\              |\\   ____\\|\\   __  \\|\\   __  \\|\\  "
+         "_____\\\\___   ___\\\n");
+  printf("\\ \\  \\___|  ____________\\ \\  \\___|\\ \\  \\|\\  \\ \\  \\|\\  "
+         "\\ \\  \\__/\\|___ \\  \\_|\n");
+  printf(" \\ \\  \\    |\\____________\\ \\  \\    \\ \\   _  _\\ \\   __  \\ "
+         "\\   __\\    \\ \\  \\  \n");
+  printf("  \\ \\  \\___\\|____________|\\ \\  \\____\\ \\  \\\\  \\\\ \\  \\ "
+         "\\  \\ \\  \\_|     \\ \\  \\ \n");
+  printf("   \\ \\_______\\             \\ \\_______\\ \\__\\\\ _\\\\ \\__\\ "
+         "\\__\\ \\__\\       \\ \\__\\\n");
+  printf(
+      "    \\|_______|              \\|_______|\\|__|\\|__|\\|__|\\|__|\\|__|  "
+      "      \\|__| %s2.4\t\t\t  Made by %sOrangeXarot%s\n\n",
+      reset, color, reset);
 }
 
 void setup() {
-  for(int i = 0; i < HEIGHT; i++) {
-    for(int j = 0; j < WIDTH; j++) {
+  for (int i = 0; i < HEIGHT; i++) {
+    for (int j = 0; j < WIDTH; j++) {
       map[i][j] = ' ';
     }
   }
 
-  x = WIDTH/2;
-  y = HEIGHT/2;
+  x = WIDTH / 2;
+  y = HEIGHT / 2;
   map[y][x] = pChar;
   bChar = blocks[0];
 }
@@ -94,131 +114,145 @@ void printScreen() {
 
   splash();
 
-  for(int i = 0; i < HEIGHT; i++) {
-    for(int j = 0; j < WIDTH; j++) {
-      if(i == 0 && j == 0) printf("╭");
+  for (int i = 0; i < HEIGHT; i++) {
+    for (int j = 0; j < WIDTH; j++) {
+      if (i == 0 && j == 0)
+        printf("╭");
 
-      else if(i == 0 && j == WIDTH-1)
+      else if (i == 0 && j == WIDTH - 1)
         printf("╮");
 
-      else if(i == HEIGHT-1 && j == 0)
+      else if (i == HEIGHT - 1 && j == 0)
         printf("╰");
 
-      else if(i == HEIGHT-1 && j == WIDTH-1)
+      else if (i == HEIGHT - 1 && j == WIDTH - 1)
         printf("╯");
 
-      else if(i == 0 || i == HEIGHT-1)
+      else if (i == 0 || i == HEIGHT - 1)
         printf("─");
 
-      else if(j == 0 || j == WIDTH-1)
+      else if (j == 0 || j == WIDTH - 1)
         printf("│");
 
-      else if(map[i][j] == 'O')
+      else if (map[i][j] == 'O')
         printf("%sO%s", color, reset);
 
       else
         printf("%c", map[i][j]);
-
     }
 
     printf("\n");
   }
 
-  printf(" Movement: %sw a s d%s  |  Build and Destroy: %sarrows%s  |  Change Block: %sc v%s  |  Custom Block: %s?%s  |  Quit: %sq%s\t\t  X: %s%d%s Y: %s%d%s\n", 
-         color, reset, color, reset, color, reset, color, reset, color, reset, color, x, reset, color, y, reset);
+  printf(" Movement: %sw a s d%s  |  Build and Destroy: %sarrows%s  |  Change "
+         "Block: %sc v%s  |  Custom Block: %s?%s  |  Quit: %sq%s\t\t  X: "
+         "%s%d%s Y: %s%d%s\n",
+         color, reset, color, reset, color, reset, color, reset, color, reset,
+         color, x, reset, color, y, reset);
   printf(" Blocks: %s", color);
 
-  for(int i = 0; i < totBlocks; i++) {
+  for (int i = 0; i < totBlocks; i++) {
     printf(" ");
-    if(idxBlocks == i && bChar != cChar) printf("\e[7m");
+    if (idxBlocks == i && bChar != cChar)
+      printf("\e[7m");
     printf("%c", blocks[i]);
     printf("\e[27m");
-  } 
+  }
 
   printf("%s", reset);
 
-  if(cChar != ' ') {
-    if(bChar == cChar)
+  if (cChar != ' ') {
+    if (bChar == cChar)
       printf(" | \e[7m%s%c%s\e[27m", color, cChar, reset);
 
-    else 
+    else
       printf(" | %s%c%s", color, cChar, reset);
-
   }
 
   printf("\n");
   system("/bin/stty raw");
 }
 
-
 void movement() {
   input = getchar();
   map[y][x] = ' ';
 
-  switch(input) {
-    case 'a':
-      x--;
-      if(x == 0 || map[y][x] != ' ') x++;
-      break;
-
-    case 'd':
+  switch (input) {
+  case 'a':
+    x--;
+    if (x == 0 || map[y][x] != ' ')
       x++;
-      if(x == WIDTH-1 || map[y][x] != ' ') x--;
-      break;
+    break;
 
-    case 'w':
-      y--;
-      if(y == 0 || map[y][x] != ' ') y++;
-      break;
+  case 'd':
+    x++;
+    if (x == WIDTH - 1 || map[y][x] != ' ')
+      x--;
+    break;
 
-    case 's':
+  case 'w':
+    y--;
+    if (y == 0 || map[y][x] != ' ')
       y++;
-      if(y == HEIGHT-1 || map[y][x] != ' ') y--;
-      break;
+    break;
 
-    case 'v':
-      idxBlocks++;
-      if(idxBlocks > totBlocks - 1 || cChar == bChar) 
-        idxBlocks = 0;
+  case 's':
+    y++;
+    if (y == HEIGHT - 1 || map[y][x] != ' ')
+      y--;
+    break;
 
-      cChar = ' ';
-      bChar = blocks[idxBlocks];
-      break;
+  case 'v':
+    idxBlocks++;
+    if (idxBlocks > totBlocks - 1 || cChar == bChar)
+      idxBlocks = 0;
 
-    case 'c':
-      idxBlocks--;
-      if(idxBlocks < 0 || cChar == bChar) 
-        idxBlocks = totBlocks - 1;
+    cChar = ' ';
+    bChar = blocks[idxBlocks];
+    break;
 
-      cChar = ' ';
-      bChar = blocks[idxBlocks];
-      break;
+  case 'c':
+    idxBlocks--;
+    if (idxBlocks < 0 || cChar == bChar)
+      idxBlocks = totBlocks - 1;
 
-    case '?':
-      printf("\b Click a key to make it the custom character");
-      cChar = getchar();
-      bChar = cChar;
-      break;
+    cChar = ' ';
+    bChar = blocks[idxBlocks];
+    break;
 
-    case UP_ARROW:
-      if(map[y-1][x] != ' ') map[y-1][x] = ' ';
-      else map[y-1][x] = bChar;
-      break;
+  case '?':
+    printf("\b Click a key to make it the custom character");
+    cChar = getchar();
+    bChar = cChar;
+    break;
 
-    case RIGHT_ARROW:
-      if(map[y][x+1] != ' ') map[y][x+1] = ' ';
-      else map[y][x+1] = bChar;
-      break;
+  case UP_ARROW:
+    if (map[y - 1][x] != ' ')
+      map[y - 1][x] = ' ';
+    else
+      map[y - 1][x] = bChar;
+    break;
 
-    case DOWN_ARROW:
-      if(map[y+1][x] != ' ') map[y+1][x] = ' ';
-      else map[y+1][x] = bChar;
-      break;
+  case RIGHT_ARROW:
+    if (map[y][x + 1] != ' ')
+      map[y][x + 1] = ' ';
+    else
+      map[y][x + 1] = bChar;
+    break;
 
-    case LEFT_ARROW:
-      if(map[y][x-1] != ' ') map[y][x-1] = ' ';
-      else map[y][x-1] = bChar;
-      break;
+  case DOWN_ARROW:
+    if (map[y + 1][x] != ' ')
+      map[y + 1][x] = ' ';
+    else
+      map[y + 1][x] = bChar;
+    break;
+
+  case LEFT_ARROW:
+    if (map[y][x - 1] != ' ')
+      map[y][x - 1] = ' ';
+    else
+      map[y][x - 1] = bChar;
+    break;
   }
 
   map[y][x] = pChar;
@@ -237,5 +271,3 @@ int main() {
   system("/bin/stty cooked");
   printf("\b\b Quitted...\n\e[?25h");
 }
-
-
