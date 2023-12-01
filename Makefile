@@ -5,3 +5,6 @@ ccraft: ccraft.c
 
 clean:
 	rm -f ccraft
+
+run: ccraft
+	./ccraft

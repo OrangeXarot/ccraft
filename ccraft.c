@@ -25,13 +25,15 @@
 
 char map[HEIGHT][WIDTH];
 char pChar = 'O';
-char blocks[] = {'#', '$', '/', '\\', '[', ']', '-'};
+char blocks[] = {'#', '$', '/', '\\', '|', '[', ']', '-', '+', '=', '<', '>'};
 int totBlocks = sizeof(blocks)/sizeof(blocks[0]);
 int idxBlocks = 0;
 char bChar;
+char cChar = ' ';
 char input;
 int x, y;
 char color[9];
+char reset[] = "\e[0m";
 
 void init_color();
 void splash();
@@ -66,15 +68,14 @@ void init_color() {
 }
 
 void splash() {
-  char reset[] = "\e[0m";
 
-  printf("\b \n%s ________                ________  ________  ________  ________ __________\n", color);
+  printf("\e[?25l\b \n%s ________                ________  ________  ________  ________ __________\n", color);
   printf("|\\   ____\\              |\\   ____\\|\\   __  \\|\\   __  \\|\\  _____\\\\___   ___\\\n");
   printf("\\ \\  \\___|  ____________\\ \\  \\___|\\ \\  \\|\\  \\ \\  \\|\\  \\ \\  \\__/\\|___ \\  \\_|\n");
   printf(" \\ \\  \\    |\\____________\\ \\  \\    \\ \\   _  _\\ \\   __  \\ \\   __\\    \\ \\  \\  \n");
   printf("  \\ \\  \\___\\|____________|\\ \\  \\____\\ \\  \\\\  \\\\ \\  \\ \\  \\ \\  \\_|     \\ \\  \\ \n");
   printf("   \\ \\_______\\             \\ \\_______\\ \\__\\\\ _\\\\ \\__\\ \\__\\ \\__\\       \\ \\__\\\n");
-  printf("    \\|_______|              \\|_______|\\|__|\\|__|\\|__|\\|__|\\|__|        \\|__| %s2.2\t\t\t   Made by %sOrangeXarot%s\n\n", reset, color, reset);
+  printf("    \\|_______|              \\|_______|\\|__|\\|__|\\|__|\\|__|\\|__|        \\|__| %s2.4\t\t\t  Made by %sOrangeXarot%s\n\n", reset, color, reset);
 }
 
 void setup() {
@@ -107,6 +108,8 @@ void printScreen() {
         printf("─");
       else if(j == 0 || j == WIDTH-1)
         printf("│");
+      else if(map[i][j] == 'O')
+        printf("%sO%s", color, reset);
       else
         printf("%c", map[i][j]);
     }
@@ -114,8 +117,23 @@ void printScreen() {
   }
 
 
-  printf(" Movement: w a s d   Change block: c ('%c')  \t\t\t\t\t\tQuit: q\t\t  X: %d Y: %d\n", bChar, x, y);
-  printf(" Build and Destroy: arrows\n");
+  printf(" Movement: %sw a s d%s  |  Build and Destroy: %sarrows%s  |  Change Block: %sc v%s  |  Custom Block: %s?%s  |  Quit: %sq%s\t\t  X: %s%d%s Y: %s%d%s\n", color, reset, color, reset, color, reset, color, reset, color, reset, color, x, reset, color, y, reset);
+  printf(" Blocks: %s", color);
+
+  for(int i = 0; i < totBlocks; i++) {
+    printf(" ");
+    if(idxBlocks == i && bChar != cChar) printf("\e[7m");
+    printf("%c", blocks[i]);
+    printf("\e[27m");
+  } 
+  printf("%s", reset);
+  if(cChar != ' ') {
+    if(bChar == cChar)
+      printf(" | \e[7m%s%c%s\e[27m", color, cChar, reset);
+    else 
+      printf(" | %s%c%s", color, cChar, reset);
+  }
+  printf("\n");
   system("/bin/stty raw");
 
 }
@@ -123,7 +141,6 @@ void printScreen() {
 
 void movement() {
   input = getchar();
-  putchar(input);
   map[y][x] = ' ';
   switch(input) {
     case 'a':
@@ -146,26 +163,39 @@ void movement() {
       if(y == HEIGHT-1 || map[y][x] != ' ')
         y--;
       break;
-    case 'c':
+    case 'v':
       idxBlocks++;
-      if(idxBlocks == totBlocks) 
+      if(idxBlocks > totBlocks - 1 || cChar == bChar) 
         idxBlocks = 0;
+      cChar = ' ';
       bChar = blocks[idxBlocks];
       break;
+    case 'c':
+      idxBlocks--;
+      if(idxBlocks < 0 || cChar == bChar) 
+        idxBlocks = totBlocks - 1;
+      cChar = ' ';
+      bChar = blocks[idxBlocks];
+      break;
+    case '?':
+      printf("\b Click a key to make it the custom character");
+      cChar = getchar();
+      bChar = cChar;
+      break;
     case UP_ARROW:
-      if(map[y-1][x] == bChar) map[y-1][x] = ' ';
+      if(map[y-1][x] != ' ') map[y-1][x] = ' ';
       else map[y-1][x] = bChar;
       break;
     case RIGHT_ARROW:
-      if(map[y][x+1] == bChar) map[y][x+1] = ' ';
+      if(map[y][x+1] != ' ') map[y][x+1] = ' ';
       else map[y][x+1] = bChar;
       break;
     case DOWN_ARROW:
-      if(map[y+1][x] == bChar) map[y+1][x] = ' ';
+      if(map[y+1][x] != ' ') map[y+1][x] = ' ';
       else map[y+1][x] = bChar;
       break;
     case LEFT_ARROW:
-      if(map[y][x-1] == bChar) map[y][x-1] = ' ';
+      if(map[y][x-1] != ' ') map[y][x-1] = ' ';
       else map[y][x-1] = bChar;
       break;
   }
@@ -182,7 +212,7 @@ int main() {
   } while (input != 'q');
 
   system("/bin/stty cooked");
-  printf("\b\b Quitted...\n");
+  printf("\b\b Quitted...\n\e[?25h");
 }
 
 
